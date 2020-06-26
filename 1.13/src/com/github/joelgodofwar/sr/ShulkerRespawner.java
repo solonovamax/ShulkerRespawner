@@ -139,7 +139,6 @@ public class ShulkerRespawner  extends JavaPlugin implements Listener{
         Entity entity = e.getEntity();
         if(debug){log("entity=" + entity.getType());}
         if (entity instanceof Enderman){
-        	log("test");
         	if(debug){logDebug("biome=" + entity.getWorld().getEnvironment().toString());}
         	//if(entity.getWorld().getEnvironment() == Environment.THE_END){
         	if(entity.getWorld().getEnvironment() == Environment.THE_END&&(entity.getLocation().getBlock().getBiome() == Biome.END_HIGHLANDS||entity.getLocation().getBlock().getBiome() == Biome.END_MIDLANDS)){
@@ -196,7 +195,7 @@ public class ShulkerRespawner  extends JavaPlugin implements Listener{
 	            }
 	            /** Command code */
 		    	if(!args[1].equalsIgnoreCase("true") & !args[1].equalsIgnoreCase("false")){
-					sender.sendMessage(ChatColor.YELLOW + this.getName() + " §c" + lang.get("boolean." + daLang + "") + ": /SR DEBUG True/False");
+					sender.sendMessage(ChatColor.YELLOW + this.getName() + " ï¿½c" + lang.get("boolean." + daLang + "") + ": /SR DEBUG True/False");
 		    	}else if(args[1].contains("true") || args[1].contains("false")){
 					//sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + " " + args[1]);
 					if(args[1].contains("false")){
