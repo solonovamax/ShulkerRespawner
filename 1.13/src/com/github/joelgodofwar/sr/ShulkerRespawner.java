@@ -1,6 +1,7 @@
 package com.github.joelgodofwar.sr;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
@@ -32,14 +33,15 @@ import java.util.logging.Logger;
 
 
 public class ShulkerRespawner extends JavaPlugin implements Listener {
-    public final static Logger  logger    = Logger.getLogger("Minecraft");
-    public static       String  daLang;
-    public static       boolean UpdateCheck;
-    public              String  updateurl = "https://raw.githubusercontent.com/JoelGodOfwar/ShulkerRespawner/master/versions/1" +
-                                            ".13/version.txt";
-    File langFile;
-    private FileConfiguration lang;
-    private boolean           debug;
+    public final static Logger                   logger                 = Logger.getLogger("Minecraft");
+    public static       String                   daLang;
+    public static       boolean                  UpdateCheck;
+    private final       ScheduledExecutorService updateExecutor         = Executors.newSingleThreadScheduledExecutor();
+    private             File                     langFile;
+    private             boolean                  shouldAlertOfNewUpdate = false;
+    private             String                   versionToUpdateTo      = "none";
+    private             FileConfiguration        lang;
+    private             boolean                  debug;
     
     public static String getMCVersion() {
         String strVersion = Bukkit.getVersion();
@@ -77,11 +79,38 @@ public class ShulkerRespawner extends JavaPlugin implements Listener {
         if (debug) logger.info("[DEBUG] " + string);
     }
     
+    public void checkForUpdate() {
+        try {
+            URL url = new URL("https://raw.githubusercontent.com/JoelGodOfwar/ShulkerRespawner/master/versioncheck/1.13/version.txt");
+            
+            URLConnection conn = url.openConnection();
+            conn.setConnectTimeout(5000);
+            
+            BufferedReader reader       = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String         response     = reader.readLine();
+            String         localVersion = this.getDescription().getVersion();
+            
+            if (debug) {
+                logDebug("response=" + response + ".");
+                logDebug("localVersion= ." + localVersion + ".");
+            }
+            if (!response.equalsIgnoreCase(localVersion)) {
+                versionToUpdateTo = response;
+                shouldAlertOfNewUpdate = true;
+            }
+        } catch (Exception e) {
+            logger.info("Ran into error while trying to fetch version file."); //TODO add translation for error message
+            e.printStackTrace();
+        }
+    }
+    
     @EventHandler
     public void onPlayerJoinEvent(PlayerJoinEvent event) {
-        Player p = event.getPlayer();
-        if (p.isOp() && UpdateCheck) {
-            
+        Player player = event.getPlayer();
+        if (player.isOp() && shouldAlertOfNewUpdate) {
+            player.sendMessage(ChatColor.YELLOW + this.getName() + ChatColor.RED + " " + lang.get("newversion." + daLang + ""));
+            shouldAlertOfNewUpdate = false;
+            versionToUpdateTo = "none";
         }
     }
     
@@ -91,11 +120,12 @@ public class ShulkerRespawner extends JavaPlugin implements Listener {
         if (debug)
             logDebug("entity=" + entity.getType());
         if (entity instanceof Enderman) {
-            if (debug) {logDebug("biome=" + entity.getWorld().getEnvironment().toString());}
+            if (debug)
+                logDebug("biome=" + entity.getWorld().getEnvironment().toString());
             if (entity.getWorld().getEnvironment() == Environment.THE_END &&
                 (entity.getLocation().getBlock().getBiome() == Biome.END_HIGHLANDS ||
                  entity.getLocation().getBlock().getBiome() == Biome.END_MIDLANDS)) {
-                
+        
                 if (debug)
                     logDebug("block=" + entity.getLocation().getBlock().getType().toString());
                 if (entity.getLocation().subtract(0, 1, 0).getBlock().getType().toString().contains("PURPUR") ||
@@ -148,7 +178,9 @@ public class ShulkerRespawner extends JavaPlugin implements Listener {
             logDebug("debug=" + getConfig().getBoolean("debug"));
             logDebug("lang=" + getConfig().getString("lang"));
         }
-        
+    
         this.getCommand("sr").setExecutor(new SRCommand(this));
+    
+        updateExecutor.scheduleAtFixedRate(this::checkForUpdate, 0, 1, TimeUnit.DAYS);//check for updates every 24 hours
     }
 }
