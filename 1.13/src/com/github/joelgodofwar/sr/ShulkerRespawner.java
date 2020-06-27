@@ -37,7 +37,6 @@ public class ShulkerRespawner extends JavaPlugin implements Listener {
     public static       String                   daLang;
     public static       boolean                  UpdateCheck;
     private final       ScheduledExecutorService updateExecutor         = Executors.newSingleThreadScheduledExecutor();
-    private             File                     langFile;
     private             boolean                  shouldAlertOfNewUpdate = false;
     private             String                   versionToUpdateTo      = "none";
     private             FileConfiguration        lang;
@@ -125,13 +124,22 @@ public class ShulkerRespawner extends JavaPlugin implements Listener {
             if (entity.getWorld().getEnvironment() == Environment.THE_END &&
                 (entity.getLocation().getBlock().getBiome() == Biome.END_HIGHLANDS ||
                  entity.getLocation().getBlock().getBiome() == Biome.END_MIDLANDS)) {
-        
+    
                 if (debug)
                     logDebug("block=" + entity.getLocation().getBlock().getType().toString());
                 if (entity.getLocation().subtract(0, 1, 0).getBlock().getType().toString().contains("PURPUR") ||
                     entity.getLocation().getBlock().getType().toString().contains("PURPUR")) {
                     Location location = entity.getLocation();
                     World    world    = entity.getWorld();
+    
+                    for (Entity en : e.getEntity().getNearbyEntities(5.0, 5.0, 5.0)) { /* only allow a shulker to spawn if there
+                                                                                                are no other shulkers within a 10 block
+                                                                                                radius. */
+                        if (en instanceof Shulker) {
+                            return;
+                        }
+                    }
+    
                     e.setCancelled(true);
                     if (debug)
                         logDebug("Enderman tried to spawn at " + location + " and a shulker was spawned in it's place.");
@@ -150,7 +158,7 @@ public class ShulkerRespawner extends JavaPlugin implements Listener {
     public void onEnable() {
         daLang = getConfig().getString("lang");
         debug = getConfig().getBoolean("debug");
-        langFile = new File(getDataFolder(), "lang.yml");
+        File langFile = new File(getDataFolder(), "lang.yml");
         if (!langFile.exists()) {                                  // checks if the yaml does not exist
             langFile.getParentFile().mkdirs();                  // creates the /plugins/<pluginName>/ directory if not found
             saveResource("lang.yml", true);
