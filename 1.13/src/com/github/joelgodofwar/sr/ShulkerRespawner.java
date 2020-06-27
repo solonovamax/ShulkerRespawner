@@ -1,7 +1,6 @@
 package com.github.joelgodofwar.sr;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
@@ -26,6 +25,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 
@@ -72,33 +74,13 @@ public class ShulkerRespawner extends JavaPlugin implements Listener {
     }
     
     public void logDebug(String string) {
-        if (debug)
-            logger.info("[DEBUG] " + string);
+        if (debug) logger.info("[DEBUG] " + string);
     }
     
     @EventHandler
     public void onPlayerJoinEvent(PlayerJoinEvent event) {
         Player p = event.getPlayer();
         if (p.isOp() && UpdateCheck) {
-            try {
-                
-                URL                 url  = new URL(updateurl);
-                final URLConnection conn = url.openConnection();
-                conn.setConnectTimeout(5000);
-                final BufferedReader reader       = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                final String         response     = reader.readLine();
-                final String         localVersion = this.getDescription().getVersion();
-                
-                if (debug) {
-                    logDebug("response= ." + response + ".");
-                    logDebug("localVersion= ." + localVersion + ".");
-                }
-                if (!response.equalsIgnoreCase(localVersion)) {
-                    p.sendMessage(ChatColor.YELLOW + this.getName() + ChatColor.RED + " " + lang.get("newversion." + daLang + ""));
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
             
         }
     }
@@ -154,7 +136,7 @@ public class ShulkerRespawner extends JavaPlugin implements Listener {
         
         // DEV check
         File jarfile = this.getFile().getAbsoluteFile();
-        if (jarfile.toString().contains("-DEV")) {
+        if (jarfile.toString().toUpperCase().contains("DEV")) {
             debug = true;
             logDebug("the name ShulkerRespawner jar contains the word \"dev\", debug set to true.");
         }
