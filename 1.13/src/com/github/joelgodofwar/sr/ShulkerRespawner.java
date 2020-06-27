@@ -129,59 +129,52 @@ public class ShulkerRespawner extends JavaPlugin implements Listener {
     
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        //Player p = (Player)sender;
         if (cmd.getName().equalsIgnoreCase("SR")) {
-            if (args.length == 0) {
-                ///Check if player has permission
-                Player player = null;
-                if (sender instanceof Player) {
-                    player = (Player) sender;
-                    if (!player.hasPermission("shulkerrespawner.op") && !player.isOp()) {
-                        player.sendMessage(ChatColor.DARK_RED + "" + lang.get("noperm." + daLang + ""));
-                        return true;
-                    }
+            if (sender instanceof Player) { /* check if player has permission. (assume if being executed as mobs or as console, already
+                                            has permission. */
+                Player player = (Player) sender;
+                if (!(player.hasPermission("shulkerrespawner.op") || player.isOp())) {
+                    player.sendMessage(ChatColor.DARK_RED + "" + lang.get("noperm." + daLang + ""));
+                    return true;
                 }
+            }
+            
+            if (args.length == 0) { // no arguments, so send help message
                 // Command code
                 sender.sendMessage(ChatColor.GREEN + "[]===============[" + ChatColor.YELLOW + "ShulkerRespawner" + ChatColor.GREEN +
                                    "]===============[]");
-                if (sender.isOp() || sender.hasPermission("shulkerrespawner.op")) {
-                    sender.sendMessage(ChatColor.GOLD + " OP Commands");
-                    sender.sendMessage(ChatColor.GOLD + " /SR DEBUG true/false - " + lang.get("srdebuguse." + daLang + ""));
-                } else {
-                    sender.sendMessage(ChatColor.GOLD + "" + lang.get("noperm." + daLang + ""));
-                }
+                sender.sendMessage(ChatColor.GOLD + " OP Commands");
+                sender.sendMessage(ChatColor.GOLD + " /SR DEBUG true/false - " + lang.get("srdebuguse." + daLang + ""));
                 sender.sendMessage(ChatColor.GREEN + "[]===============[" + ChatColor.YELLOW + "ShulkerRespawner" + ChatColor.GREEN +
                                    "]===============[]");
                 return true;
             }
-            if (args[0].equalsIgnoreCase("DEBUG")) {
-                if (args.length < 1) {
+            if (args[0].equalsIgnoreCase("DEBUG")) { //set debug command
+                if (args.length < 2) {
                     return false;
-                }
-                // Check if player has permission
-                Player player = null;
-                if (sender instanceof Player) {
-                    player = (Player) sender;
-                    if (!player.hasPermission("shulkerrespawner.op") && !player.isOp()) {
-                        player.sendMessage(ChatColor.DARK_RED + "" + lang.get("noperm." + daLang + ""));
-                        return true;
-                    }
                 }
                 // Command code
                 if (!args[1].equalsIgnoreCase("true") & !args[1].equalsIgnoreCase("false")) {
                     sender.sendMessage(
                             ChatColor.YELLOW + this.getName() + " �c" + lang.get("boolean." + daLang + "") + ": /SR DEBUG True/False");
-                } else if (args[1].contains("true") || args[1].contains("false")) {
-                    //sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + " " + args[1]);
-                    if (args[1].contains("false")) {
-                        debug = false;
-                        sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + lang.get("debugfalse." + daLang + ""));
-                    } else if (args[1].contains("true")) {
-                        debug = true;
-                        sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + lang.get("debugtrue." + daLang + ""));
+                } else {
+                    switch (args[1].toLowerCase()) {
+                        case "false":
+                            debug = false;
+                            sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + lang.get("debugfalse." + daLang + ""));
+                            break;
+                        case "true":
+                            debug = true;
+                            sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + lang.get("debugtrue." + daLang + ""));
+                            break;
+                        default:
+                            sender.sendMessage(
+                                    "Something went very very wrong and even though we already determined that your second argument was " +
+                                    "either true or false, it was neither true nor false. If you are seeing this, then do panic. This " +
+                                    "should " +
+                                    "never happen.");
+                            return false;
                     }
-                    
-                    return true;
                 }
             }
         }
