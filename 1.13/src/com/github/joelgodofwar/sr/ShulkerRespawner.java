@@ -1,11 +1,11 @@
 package com.github.joelgodofwar.sr;
 
-import com.github.joelgodofwar.sr.api.Ansi;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.block.Biome;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -24,22 +24,20 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.logging.Logger;
 
 
 public class ShulkerRespawner extends JavaPlugin implements Listener {
-    public final static Logger  logger = Logger.getLogger("Minecraft");
+    public final static Logger  logger    = Logger.getLogger("Minecraft");
     public static       String  daLang;
     public static       boolean UpdateCheck;
-    public static       boolean debug;
-    public              String  updateurl
-                                       = "https://raw.githubusercontent.com/JoelGodOfwar/ShulkerRespawner/master/versions/1.13/version" +
-                                         ".txt";
-    File              langFile;
-    FileConfiguration lang;
+    public              String  updateurl = "https://raw.githubusercontent.com/JoelGodOfwar/ShulkerRespawner/master/versions/1" +
+                                            ".13/version.txt";
+    File langFile;
+    private FileConfiguration lang;
+    private boolean           debug;
     
     public static String getMCVersion() {
         String strVersion = Bukkit.getVersion();
@@ -49,23 +47,33 @@ public class ShulkerRespawner extends JavaPlugin implements Listener {
         return strVersion;
     }
     
-    public void consoleInfo(String state) {
-        PluginDescriptionFile pdfFile = this.getDescription();
-        logger.info(Ansi.YELLOW + "**************************************" + Ansi.SANE);
-        logger.info(Ansi.GREEN + pdfFile.getName() + " v" + pdfFile.getVersion() + Ansi.SANE + " is " + state);
-        logger.info(Ansi.YELLOW + "**************************************" + Ansi.SANE);
+    public FileConfiguration getLang() {
+        return lang;
     }
     
-    public void log(String dalog) {
-        logger.info(Ansi.YELLOW + "" + this.getName() + Ansi.SANE + " " + dalog + Ansi.SANE);
+    public void setLang(FileConfiguration lang) {
+        this.lang = lang;
     }
     
-    public void logDebug(String dalog) {
-        log(" " + this.getDescription().getVersion() + Ansi.RED + Ansi.Bold + " [DEBUG] " + Ansi.SANE + dalog);
+    public boolean isDebug() {
+        return debug;
     }
     
-    public void logWarn(String dalog) {
-        log(" " + this.getDescription().getVersion() + Ansi.RED + Ansi.Bold + " [WARNING] " + Ansi.SANE + dalog);
+    public void setDebug(boolean debug) {
+        this.debug = debug;
+    }
+    
+    public void consoleInfo(boolean enabled) {
+        PluginDescriptionFile pluginDescription = this.getDescription();
+        logger.info("\u001B[32m**************************************\u001B[0m");
+        logger.info("\u001B[32m" + pluginDescription.getName() + " v" + pluginDescription.getVersion() + "\u001B[0m is " +
+                    (enabled ? "ENABLED" : "DISABLED"));
+        logger.info("\u001B[33m**************************************\u001B[0m");
+    }
+    
+    public void logDebug(String string) {
+        if (debug)
+            logger.info("[DEBUG] " + string);
     }
     
     @EventHandler
@@ -81,19 +89,14 @@ public class ShulkerRespawner extends JavaPlugin implements Listener {
                 final String         response     = reader.readLine();
                 final String         localVersion = this.getDescription().getVersion();
                 
-                if (debug) {log("response= ." + response + ".");}
-                if (debug) {log("localVersion= ." + localVersion + ".");}
+                if (debug) {
+                    logDebug("response= ." + response + ".");
+                    logDebug("localVersion= ." + localVersion + ".");
+                }
                 if (!response.equalsIgnoreCase(localVersion)) {
                     p.sendMessage(ChatColor.YELLOW + this.getName() + ChatColor.RED + " " + lang.get("newversion." + daLang + ""));
                 }
-            } catch (MalformedURLException e) {
-                log("MalformedURLException");
-                e.printStackTrace();
-            } catch (IOException e) {
-                log("IOException");
-                e.printStackTrace();
             } catch (Exception e) {
-                log("Exception");
                 e.printStackTrace();
             }
             
@@ -103,14 +106,13 @@ public class ShulkerRespawner extends JavaPlugin implements Listener {
     @EventHandler
     public void onCreatureSpawn(CreatureSpawnEvent e) { //onEntitySpawn(EntitySpawnEvent e) {
         Entity entity = e.getEntity();
-        if (debug) {log("entity=" + entity.getType());}
+        if (debug)
+            logDebug("entity=" + entity.getType());
         if (entity instanceof Enderman) {
             if (debug) {logDebug("biome=" + entity.getWorld().getEnvironment().toString());}
             if (entity.getWorld().getEnvironment() == Environment.THE_END &&
                 (entity.getLocation().getBlock().getBiome() == Biome.END_HIGHLANDS ||
                  entity.getLocation().getBlock().getBiome() == Biome.END_MIDLANDS)) {
-                
-                Location endCityLocation = entity.getWorld().locateNearestStructure(entity.getLocation(), StructureType.END_CITY, 1, true);
                 
                 if (debug)
                     logDebug("block=" + entity.getLocation().getBlock().getType().toString());
@@ -120,70 +122,16 @@ public class ShulkerRespawner extends JavaPlugin implements Listener {
                     World    world    = entity.getWorld();
                     e.setCancelled(true);
                     if (debug)
-                        log("Enderman tried to spawn at " + location + " and a shulker was spawned in it's place.");
+                        logDebug("Enderman tried to spawn at " + location + " and a shulker was spawned in it's place.");
                     world.spawn(location, Shulker.class);
                 }
             }
         }
     }
     
-    @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (cmd.getName().equalsIgnoreCase("SR")) {
-            if (sender instanceof Player) { /* check if player has permission. (assume if being executed as mobs or as console, already
-                                            has permission. */
-                Player player = (Player) sender;
-                if (!(player.hasPermission("shulkerrespawner.op") || player.isOp())) {
-                    player.sendMessage(ChatColor.DARK_RED + "" + lang.get("noperm." + daLang + ""));
-                    return true;
-                }
-            }
-            
-            if (args.length == 0) { // no arguments, so send help message
-                // Command code
-                sender.sendMessage(ChatColor.GREEN + "[]===============[" + ChatColor.YELLOW + "ShulkerRespawner" + ChatColor.GREEN +
-                                   "]===============[]");
-                sender.sendMessage(ChatColor.GOLD + " OP Commands");
-                sender.sendMessage(ChatColor.GOLD + " /SR DEBUG true/false - " + lang.get("srdebuguse." + daLang + ""));
-                sender.sendMessage(ChatColor.GREEN + "[]===============[" + ChatColor.YELLOW + "ShulkerRespawner" + ChatColor.GREEN +
-                                   "]===============[]");
-                return true;
-            }
-            if (args[0].equalsIgnoreCase("DEBUG")) { //set debug command
-                if (args.length < 2) {
-                    return false;
-                }
-                // Command code
-                if (!args[1].equalsIgnoreCase("true") & !args[1].equalsIgnoreCase("false")) {
-                    sender.sendMessage(
-                            ChatColor.YELLOW + this.getName() + " �c" + lang.get("boolean." + daLang + "") + ": /SR DEBUG True/False");
-                } else {
-                    switch (args[1].toLowerCase()) {
-                        case "false":
-                            debug = false;
-                            sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + lang.get("debugfalse." + daLang + ""));
-                            break;
-                        case "true":
-                            debug = true;
-                            sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + lang.get("debugtrue." + daLang + ""));
-                            break;
-                        default:
-                            sender.sendMessage(
-                                    "Something went very very wrong and even though we already determined that your second argument was " +
-                                    "either true or false, it was neither true nor false. If you are seeing this, then do panic. This " +
-                                    "should " +
-                                    "never happen.");
-                            return false;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-    
     @Override // TODO: onDisable
     public void onDisable() {
-        consoleInfo(Ansi.Bold + "DISABLED" + Ansi.SANE);
+        consoleInfo(false);
     }
     
     @Override // TODO: onEnable
@@ -208,10 +156,10 @@ public class ShulkerRespawner extends JavaPlugin implements Listener {
         File jarfile = this.getFile().getAbsoluteFile();
         if (jarfile.toString().contains("-DEV")) {
             debug = true;
-            log("jarfile contains dev, debug set to true.");
+            logDebug("the name ShulkerRespawner jar contains the word \"dev\", debug set to true.");
         }
         getServer().getPluginManager().registerEvents(this, this);
-        consoleInfo(Ansi.Bold + "ENABLED" + Ansi.SANE);
+        consoleInfo(true);
         if (getConfig().getBoolean("debug") && !(jarfile.toString().contains("-DEV"))) {
             logDebug("Config.yml dump");
             logDebug("auto_update_check=" + getConfig().getBoolean("auto_update_check"));
@@ -219,5 +167,6 @@ public class ShulkerRespawner extends JavaPlugin implements Listener {
             logDebug("lang=" + getConfig().getString("lang"));
         }
         
+        this.getCommand("sr").setExecutor(new SRCommand(this));
     }
 }

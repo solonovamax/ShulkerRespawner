@@ -1,13 +1,13 @@
 name: ShulkerRespawner
 main: com.github.joelgodofwar.sr.ShulkerRespawner
 version: 1.13_1.0.0
-author: JoelGodOfWar(JoelYahwehOfWar)
+author: JoelGodOfWar(JoelYahwehOfWar) & solonovamax
 api-version: 1.13
 
 commands:
   sr:
     description: Shows ShulkerRespawner help.
-    usage: /<command>
+    usage: /<command> DEBUG true/false
     
 permissions:
   shulkerrespawner.op:
