@@ -1,5 +1,6 @@
-package com.github.joelgodofwar.sr;
+package com.github.joelgodofwar.sr.commands;
 
+import com.github.joelgodofwar.sr.ShulkerRespawner;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -24,16 +25,14 @@ public class SRCommand implements CommandExecutor {
                 return true;
             }
         }
-        
-        if (args.length == 0) { // no arguments, so send help message
+    
+        if (args.length == 0 || args[0].equalsIgnoreCase("help")) { // no arguments, so send help message
             // Command code
-            sender.sendMessage(ChatColor.GREEN + "[]===============[" + ChatColor.YELLOW + "ShulkerRespawner" + ChatColor.GREEN +
-                               "]===============[]");
-            sender.sendMessage(ChatColor.GOLD + " OP Commands");
+            sender.sendMessage(ChatColor.GREEN + "-----------------------------------------------------");
+            sender.sendMessage(ChatColor.GOLD + "Commands:");
             sender.sendMessage(
-                    ChatColor.GOLD + " /SR DEBUG true/false - " + plugin.getLang().get("srdebuguse." + ShulkerRespawner.daLang + ""));
-            sender.sendMessage(ChatColor.GREEN + "[]===============[" + ChatColor.YELLOW + "ShulkerRespawner" + ChatColor.GREEN +
-                               "]===============[]");
+                    ChatColor.GOLD + " /sr DEBUG [true|false] - " + plugin.getLang().get("srdebuguse." + ShulkerRespawner.daLang + ""));
+            sender.sendMessage(ChatColor.GREEN + "-----------------------------------------------------");
             return true;
         }
         if (args[0].equalsIgnoreCase("DEBUG")) { //set debug command

@@ -1,15 +1,33 @@
-name: ShulkerRespawner
 main: com.github.joelgodofwar.sr.ShulkerRespawner
-version: 1.13_1.0.0
-author: JoelGodOfWar(JoelYahwehOfWar) & solonovamax
-api-version: 1.13
+name: ShulkerRespawner
+version: '2.0.0'
+authors: [JoelGodOfWar(JoelYahwehOfWar), solonovamax]
+description: A plugin that allows shulkers to respawn in the end.
+api-version: '1.13'
+
+prefix: Shulker Respawner
 
 commands:
   sr:
+    aliases: shulkerrespawner
     description: Shows ShulkerRespawner help.
-    usage: /<command> DEBUG true/false
-    
+    usage: /<command> DEBUG [true|false] or /<command> help
+    permission: shulkerrespawner.debug
+    permission-message: You need the shulkerrespawner.op permission to use this.
+  sr-lang:
+    aliases: shulkerrespawner-lang
+    description: Allows you to set the language of the plugin
+    usage: /<command> [list|set <language>]
+    permission: shulkerrespawner.lang
+
 permissions:
-  shulkerrespawner.op:
-    description: add later
-    default: true
+  shulkerrespawner.admin:
+    description: Master permission for shulker respawner plugin
+    default: false
+    children:
+      shulkerrespawner.lang:
+        description: Allows you to change the language of the plugin.
+        default: op
+      shulkerrespaner.debug:
+        description: Permission for plugin debuging.
+        default: false

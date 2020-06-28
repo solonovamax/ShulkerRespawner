@@ -1,5 +1,6 @@
 package com.github.joelgodofwar.sr;
 
+import com.github.joelgodofwar.sr.commands.SRCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
