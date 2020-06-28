@@ -1,5 +1,6 @@
 package com.github.joelgodofwar.sr;
 
+import com.github.joelgodofwar.sr.commands.LangCommand;
 import com.github.joelgodofwar.sr.commands.SRCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -27,21 +28,17 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 
 public class ShulkerRespawner extends JavaPlugin implements Listener {
-    public final static Logger                   logger                 = Logger.getLogger("Minecraft");
-    public static       String                   daLang;
-    public static       boolean                  UpdateCheck;
-    private final       ScheduledExecutorService updateExecutor         = Executors.newSingleThreadScheduledExecutor();
-    private             boolean                  shouldAlertOfNewUpdate = false;
-    private             String                   versionToUpdateTo      = "none";
-    private             FileConfiguration        lang;
-    private             boolean                  debug;
+    public static boolean           UpdateCheck;
+    private final Logger            logger                 = this.getLogger();
+    private       String            daLang;
+    private       boolean           shouldAlertOfNewUpdate = false;
+    private       String            versionToUpdateTo      = "none";
+    private       FileConfiguration lang;
+    private       boolean           debug;
     
     public static String getMCVersion() {
         String strVersion = Bukkit.getVersion();
@@ -51,12 +48,16 @@ public class ShulkerRespawner extends JavaPlugin implements Listener {
         return strVersion;
     }
     
-    public FileConfiguration getLang() {
-        return lang;
+    public String getDaLang() {
+        return daLang;
     }
     
-    public void setLang(FileConfiguration lang) {
-        this.lang = lang;
+    public void setDaLang(String daLang) {
+        daLang = daLang;
+    }
+    
+    public FileConfiguration getLang() {
+        return lang;
     }
     
     public boolean isDebug() {
@@ -108,7 +109,7 @@ public class ShulkerRespawner extends JavaPlugin implements Listener {
     public void onPlayerJoinEvent(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         if (player.isOp() && shouldAlertOfNewUpdate) {
-            player.sendMessage(ChatColor.YELLOW + this.getName() + ChatColor.RED + " " + lang.get("newversion." + daLang + ""));
+            player.sendMessage(ChatColor.YELLOW + this.getName() + ChatColor.RED + " " + lang.getString("newversion." + daLang));
             shouldAlertOfNewUpdate = false;
             versionToUpdateTo = "none";
         }
@@ -166,6 +167,7 @@ public class ShulkerRespawner extends JavaPlugin implements Listener {
             //ConfigAPI.copy(getResource("lang.yml"), langFile); // copies the yaml from your jar to the folder /plugin/<pluginName>
             
         }
+    
         lang = new YamlConfiguration();
         try {
             lang.load(langFile);
@@ -188,8 +190,11 @@ public class ShulkerRespawner extends JavaPlugin implements Listener {
             logDebug("lang=" + getConfig().getString("lang"));
         }
     
-        this.getCommand("sr").setExecutor(new SRCommand(this));
+        getCommand("sr").setExecutor(new SRCommand(this));
+        getCommand("sr-lang").setExecutor(new LangCommand(this));
     
-        updateExecutor.scheduleAtFixedRate(this::checkForUpdate, 0, 1, TimeUnit.DAYS);//check for updates every 24 hours
+        //updateExecutor.scheduleAtFixedRate(this::checkForUpdate, 0, 1, TimeUnit.DAYS);//check for updates every 24 hours
+    
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, this::checkForUpdate, 0, 1728000);
     }
 }

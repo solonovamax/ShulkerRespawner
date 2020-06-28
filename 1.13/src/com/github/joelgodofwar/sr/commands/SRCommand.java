@@ -5,7 +5,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 
 public class SRCommand implements CommandExecutor {
@@ -17,21 +16,12 @@ public class SRCommand implements CommandExecutor {
     
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String... args) {
-        if (sender instanceof Player) { /* check if player has permission. (assume if being executed as mobs or as console, already
-                                            has permission. */
-            Player player = (Player) sender;
-            if (!(player.hasPermission("shulkerrespawner.op") || player.isOp())) {
-                player.sendMessage(ChatColor.DARK_RED + "" + plugin.getLang().get("noperm." + ShulkerRespawner.daLang + ""));
-                return true;
-            }
-        }
-    
         if (args.length == 0 || args[0].equalsIgnoreCase("help")) { // no arguments, so send help message
             // Command code
             sender.sendMessage(ChatColor.GREEN + "-----------------------------------------------------");
             sender.sendMessage(ChatColor.GOLD + "Commands:");
             sender.sendMessage(
-                    ChatColor.GOLD + " /sr DEBUG [true|false] - " + plugin.getLang().get("srdebuguse." + ShulkerRespawner.daLang + ""));
+                    ChatColor.GOLD + " /sr DEBUG [true|false] - " + plugin.getLang().getString("srdebuguse." + plugin.getDaLang()));
             sender.sendMessage(ChatColor.GREEN + "-----------------------------------------------------");
             return true;
         }
@@ -40,21 +30,21 @@ public class SRCommand implements CommandExecutor {
                 return false;
             }
             // Command code
-            if (!args[1].equalsIgnoreCase("true") & !args[1].equalsIgnoreCase("false")) {
+            if (!args[1].equalsIgnoreCase("true") && !args[1].equalsIgnoreCase("false")) {
                 sender.sendMessage(
                         ChatColor.YELLOW + plugin.getName() + " c" +
-                        plugin.getLang().get("boolean." + plugin.getDaLang() + "") + ": /sr DEBUG True/False");
+                        plugin.getLang().getString("boolean." + plugin.getDaLang()) + ": /sr DEBUG True/False");
             } else {
                 switch (args[1].toLowerCase()) {
                     case "false":
                         plugin.setDebug(false);
                         sender.sendMessage(ChatColor.YELLOW + plugin.getName() + " " +
-                                           plugin.getLang().get("debugfalse." + ShulkerRespawner.daLang + ""));
+                                           plugin.getLang().getString("debugfalse." + plugin.getDaLang()));
                         break;
                     case "true":
                         plugin.setDebug(true);
                         sender.sendMessage(ChatColor.YELLOW + plugin.getName() + " " +
-                                           plugin.getLang().get("debugtrue." + ShulkerRespawner.daLang + ""));
+                                           plugin.getLang().getString("debugtrue." + plugin.getDaLang()));
                         break;
                     default:
                         sender.sendMessage(
