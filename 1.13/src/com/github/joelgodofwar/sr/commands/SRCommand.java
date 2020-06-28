@@ -42,8 +42,8 @@ public class SRCommand implements CommandExecutor {
             // Command code
             if (!args[1].equalsIgnoreCase("true") & !args[1].equalsIgnoreCase("false")) {
                 sender.sendMessage(
-                        ChatColor.YELLOW + plugin.getName() + " �c" +
-                        plugin.getLang().get("boolean." + ShulkerRespawner.daLang + "") + ": /SR DEBUG True/False");
+                        ChatColor.YELLOW + plugin.getName() + " c" +
+                        plugin.getLang().get("boolean." + plugin.getDaLang() + "") + ": /sr DEBUG True/False");
             } else {
                 switch (args[1].toLowerCase()) {
                     case "false":
