@@ -22,7 +22,7 @@ public class LangCommand implements CommandExecutor {
         switch (args[0].toLowerCase()) {
             case "list":
                 StringBuilder langStringBuilder = new StringBuilder();
-                langStringBuilder.append("Here are a list of languages: \n");
+                langStringBuilder.append("Here are a list of languages: \n"); //TODO: i18n this.
                 for (String lang : shulkerRespawner.getLang().getStringList("lang-types")) {
                     langStringBuilder.append(lang).append(", ");
                 }

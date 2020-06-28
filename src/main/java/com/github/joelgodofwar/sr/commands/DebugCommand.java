@@ -18,7 +18,9 @@ public class DebugCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 0) {
             sender.sendMessage(ChatColor.YELLOW + shulkerRespawner.getName() + " " +
-                               shulkerRespawner.getLang().getString("debuggetvalue." + shulkerRespawner.getDaLang()));
+                               shulkerRespawner.getLang().getString("debuggetvalue." + shulkerRespawner.getDaLang()) + " " +
+                               shulkerRespawner.isDebug() + ".");
+            return false;
         }
         switch (args[0]) {
             case "set":
@@ -45,7 +47,8 @@ public class DebugCommand implements CommandExecutor {
                 }
             case "get":
                 sender.sendMessage(ChatColor.YELLOW + shulkerRespawner.getName() + " " +
-                                   shulkerRespawner.getLang().getString("debuggetvalue." + shulkerRespawner.getDaLang()));
+                                   shulkerRespawner.getLang().getString("debuggetvalue." + shulkerRespawner.getDaLang()) + " " +
+                                   shulkerRespawner.isDebug() + ".");
                 return true;
             default:
                 return false;

@@ -18,7 +18,9 @@ public class DistanceCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 0) {
             sender.sendMessage(ChatColor.YELLOW + shulkerRespawner.getName() + " " +
-                               shulkerRespawner.getLang().getString("distancegetvalue." + shulkerRespawner.getDistanceBetweenShulkers()));
+                               shulkerRespawner.getLang().getString("distancegetvalue." + shulkerRespawner.getDaLang()) + " " +
+                               shulkerRespawner.getDistanceBetweenShulkers() + ".");
+            return false;
         }
         switch (args[0]) {
             case "set":
@@ -32,7 +34,7 @@ public class DistanceCommand implements CommandExecutor {
                     shulkerRespawner.setDistanceBetweenShulkers(distance);
                     sender.sendMessage(ChatColor.YELLOW + shulkerRespawner.getName() + " " +
                                        shulkerRespawner.getLang().getString("distancesetvalue." + shulkerRespawner.getDaLang()) + " " +
-                                       distance);
+                                       distance + ".");
                     return true;
                 } catch (NumberFormatException e) {
                     sender.sendMessage(ChatColor.YELLOW + shulkerRespawner.getName() + " " +
@@ -42,7 +44,7 @@ public class DistanceCommand implements CommandExecutor {
             case "get":
                 sender.sendMessage(ChatColor.YELLOW + shulkerRespawner.getName() + " " +
                                    shulkerRespawner.getLang().getString("distancegetvalue." + shulkerRespawner.getDaLang()) + " " +
-                                   shulkerRespawner.getDistanceBetweenShulkers());
+                                   shulkerRespawner.getDistanceBetweenShulkers() + ".");
                 return true;
             default:
                 return false;

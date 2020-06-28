@@ -58,6 +58,8 @@ public class ShulkerRespawner extends JavaPlugin implements Listener {
     public void setDistanceBetweenShulkers(double distanceBetweenShulkers) {
         this.distanceBetweenShulkers = distanceBetweenShulkers;
         getConfig().set("distanceBetweenShulkers", distanceBetweenShulkers);
+        System.out.println("set distance between shulkers.");
+        saveConfig();
     }
     
     public String getDaLang() {
@@ -67,6 +69,7 @@ public class ShulkerRespawner extends JavaPlugin implements Listener {
     public void setDaLang(String daLang) {
         this.daLang = daLang;
         getConfig().set("lang", daLang);
+        saveConfig();
     }
     
     public FileConfiguration getLang() {
@@ -95,7 +98,7 @@ public class ShulkerRespawner extends JavaPlugin implements Listener {
     
     public void checkForUpdate() {
         try {
-            URL url = new URL("https://raw.githubusercontent.com/JoelGodOfwar/ShulkerRespawner/master/versioncheck/1.13/version.txt");
+            URL url = new URL("https://raw.githubusercontent.com/solonovamax/ShulkerRespawner/master/versioncheck/1.13/version.txt");
             
             URLConnection conn = url.openConnection();
             conn.setConnectTimeout(5000);
@@ -173,25 +176,27 @@ public class ShulkerRespawner extends JavaPlugin implements Listener {
     
     @Override // TODO: onEnable
     public void onEnable() {
+        saveDefaultConfig();
+        
         daLang = getConfig().getString("lang");
         debug = getConfig().getBoolean("debug");
         distanceBetweenShulkers = getConfig().getDouble("distanceBetweenShulkers");
-    
+        
         File langFile = new File(getDataFolder(), "lang.yml");
         if (!langFile.exists()) {                                  // checks if the yaml does not exist
             langFile.getParentFile().mkdirs();                  // creates the /plugins/<pluginName>/ directory if not found
             saveResource("lang.yml", true);
             //ConfigAPI.copy(getResource("lang.yml"), langFile); // copies the yaml from your jar to the folder /plugin/<pluginName>
         }
-    
+        
         lang = new YamlConfiguration();
         try {
             lang.load(langFile);
         } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
         }
-    
-    
+        
+        
         getServer().getPluginManager().registerEvents(this, this);
         consoleInfo(true);
         if (getConfig().getBoolean("debug")) {
@@ -200,12 +205,12 @@ public class ShulkerRespawner extends JavaPlugin implements Listener {
             logDebug("debug=" + getConfig().getBoolean("debug"));
             logDebug("lang=" + getConfig().getString("lang"));
         }
-    
+        
         getCommand("sr-help").setExecutor(new HelpCommand(this));
         getCommand("sr-lang").setExecutor(new LangCommand(this));
         getCommand("sr-debug").setExecutor(new DebugCommand(this));
         getCommand("sr-distance").setExecutor(new DistanceCommand(this));
-    
+        
         //updateExecutor.scheduleAtFixedRate(this::checkForUpdate, 0, 1, TimeUnit.DAYS);//check for updates every 24 hours
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, this::checkForUpdate, 0, 1728000);
     }

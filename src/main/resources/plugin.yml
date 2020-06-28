@@ -1,0 +1,47 @@
+main: com.github.joelgodofwar.sr.ShulkerRespawner
+name: ShulkerRespawner
+version: '2.0.0'
+authors: [JoelGodOfWar(JoelYahwehOfWar), solonovamax]
+description: A plugin that allows shulkers to respawn in the end.
+api-version: '1.13'
+
+prefix: Shulker Respawner
+
+commands:
+  sr-help:
+    aliases: shulkerrespawner-help
+    description: Shows ShulkerRespawner help.
+    usage: /<command> or /<command> <command-name>
+  sr-debug:
+    aliases: shulkerrespawner-debug
+    description: Enables/Disables debugging.
+    usage: /<command> set [true|false] or /<command> list
+    permission: shulkerrespawner.debug
+    permission-message: You need the shulkerrespawner.debug permission to use this.
+  sr-lang:
+    aliases: shulkerrespawner-lang
+    description: Allows you to set the language of the plugin
+    usage: /<command> list or /<command> set <language>
+    permission: shulkerrespawner.lang
+    permission-message: You need the shulkerrespawner.lang permission to use this.
+  sr-distance:
+    aliases: shulkerrespawner-distance
+    description: Allows you to set the distance between shulkers. If the distance between an enderman and another shulker is less than this at spawn time, it will not transform into a shulker.
+    usage: /<command> get or /<command> set <distance>
+    permission: shulkerrespawner.distance
+    permission-message: You need the shulkerrespawner.distance permission to use this.
+
+permissions:
+  shulkerrespawner.admin:
+    description: Master permission for shulker respawner plugin
+    default: false
+    children:
+      shulkerrespawner.lang:
+        description: Permission to allow you to change the language of the plugin.
+        default: op
+      shulkerrespaner.debug:
+        description: Permission for plugin debuging.
+        default: false
+      shulkerrespaner.distance:
+        description: Permission to allow you to change the shulker distance.
+        default: false

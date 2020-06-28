@@ -1,7 +1,0 @@
-# Set to true before sending a log about an issue.
-# Logs trace data required to pinpoint where errors are.
-debug: false
-# Set the language to use, en_US, nl_NL, fr_FR, de_DE, zh_CN, cs-CZ, pt_BR
-lang: en_US
-# Set the distance between shulkers. If the distance between an enderman and another shulker is less than this at spawn time, it will not transform into a shulker.
-distanceBetweenShulkers: 10.0
