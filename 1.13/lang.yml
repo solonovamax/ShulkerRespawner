@@ -1,4 +1,4 @@
-lang-types: ['en_US', 'nl_NL', 'lol_US', 'fr_FR', 'de_DE', 'zh_CN', 'cs_CZ', 'pt_BR', 'hr_HR']
+lang-types: ['en_US', 'nl_NL', 'fr_FR', 'de_DE', 'zh_CN', 'cs_CZ', 'pt_BR', 'hr_HR']
 newversion:
   en_US: New version available!
   nl_NL: Nieuwe versie beschikbaar!

@@ -11,7 +11,7 @@ commands:
   sr-help:
     aliases: shulkerrespawner-help
     description: Shows ShulkerRespawner help.
-    usage: /<command> or /<command> \<command>
+    usage: /<command> or /<command> <command-name>
   sr-debug:
     aliases: shulkerrespawner-debug
     description: Enables/Disables debugging.
