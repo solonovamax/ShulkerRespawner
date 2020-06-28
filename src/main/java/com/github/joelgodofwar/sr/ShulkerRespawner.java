@@ -80,7 +80,6 @@ public class ShulkerRespawner extends JavaPlugin implements Listener {
     public void setDistanceBetweenShulkers(double distanceBetweenShulkers) {
         this.distanceBetweenShulkers = distanceBetweenShulkers;
         getConfig().set("distanceBetweenShulkers", distanceBetweenShulkers);
-        System.out.println("set distance between shulkers.");
         saveConfig();
     }
     
@@ -138,7 +137,7 @@ public class ShulkerRespawner extends JavaPlugin implements Listener {
                 shouldAlertOfNewUpdate = true;
             }
         } catch (Exception e) {
-            logger.info("Ran into error while trying to fetch version file."); //TODO add translation for error message
+            logger.info("Ran into error while trying to fetch version file.");
             e.printStackTrace();
         }
     }
@@ -156,18 +155,14 @@ public class ShulkerRespawner extends JavaPlugin implements Listener {
     @EventHandler
     public void onEntitySpawn(EntitySpawnEvent e) { //onEntitySpawn(EntitySpawnEvent e) {
         Entity entity = e.getEntity();
-        if (debug)
-            logDebug("entity=" + entity.getType());
+        logDebug("entity=" + entity.getType());
         if (entity instanceof Enderman) {
-            if (debug)
-                logDebug("biome=" + entity.getWorld().getEnvironment().toString());
+            logDebug("biome=" + entity.getWorld().getEnvironment().toString());
             if (entity.getWorld().getEnvironment() == Environment.THE_END &&
                 (entity.getLocation().getBlock().getBiome() == Biome.END_HIGHLANDS ||
                  entity.getLocation().getBlock().getBiome() == Biome.END_MIDLANDS)) {
                 
-                if (debug) {
-                    logDebug("block=" + entity.getLocation().getBlock().getType().toString());
-                }
+                logDebug("block=" + entity.getLocation().getBlock().getType().toString());
                 if (entity.getLocation().subtract(0, 1, 0).getBlock().getType().toString().contains("PURPUR") ||
                     entity.getLocation().getBlock().getType().toString().contains("PURPUR")) {
                     Location location = entity.getLocation();
@@ -183,8 +178,7 @@ public class ShulkerRespawner extends JavaPlugin implements Listener {
                     }
                     
                     e.setCancelled(true);
-                    if (debug)
-                        logDebug("Enderman tried to spawn at " + location + " and a shulker was spawned in it's place.");
+                    logDebug("Enderman tried to spawn at " + location + " and a shulker was spawned in it's place.");
                     world.spawn(location, Shulker.class);
                 }
             }
