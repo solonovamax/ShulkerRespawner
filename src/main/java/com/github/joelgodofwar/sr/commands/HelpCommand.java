@@ -1,3 +1,25 @@
+/*
+ * Copyright © 2020 solonovamax <solonovamax@12oclockpoint.com>
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package com.github.joelgodofwar.sr.commands;
 
 import com.github.joelgodofwar.sr.ShulkerRespawner;
@@ -20,19 +42,19 @@ public class HelpCommand implements CommandExecutor {
             sender.sendMessage("/sr-help <command-name> or /sr-help:");
             sender.sendMessage("    The help command.");
             sender.sendMessage("    Aliases: shulkerrespawner-help");
-        
+            
             sender.sendMessage("/sr-debug set [true|false] or /sr-debug get:");
             sender.sendMessage("    Allows you to set the debug value.");
             sender.sendMessage("    Aliases: shulkerrespawner-help");
-        
+            
             sender.sendMessage("/sr-lang set <language-code> or /sr-lang list:");
             sender.sendMessage("    Allows you to set the language.");
             sender.sendMessage("    Aliases: shulkerrespawner-lang");
-        
+            
             sender.sendMessage("/sr-distance <command-name> or /sr-distance:");
             sender.sendMessage("    Allows you to change the distance.");
             sender.sendMessage("    Aliases: shulkerrespawner-distance");
-        
+            
             sender.sendMessage("\n Do /sr-help <command-name> for more info on each command.");
             sender.sendMessage("----------------------------------------------------");
             return true;
