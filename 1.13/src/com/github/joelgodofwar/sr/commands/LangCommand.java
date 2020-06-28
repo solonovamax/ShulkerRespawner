@@ -35,7 +35,10 @@ public class LangCommand implements CommandExecutor {
                     return false;
                 if (shulkerRespawner.getLang().getStringList("lang-types").contains(args[1])) {
                     shulkerRespawner.setDaLang(args[1]);
-                    
+                    sender.sendMessage(ChatColor.YELLOW + shulkerRespawner.getLang()
+                                                                          .getString(
+                                                                                  "changedlanguage" + shulkerRespawner.getDaLang() + " " +
+                                                                                  args[1]));
                     return true;
                 } else {
                     sender.sendMessage(
